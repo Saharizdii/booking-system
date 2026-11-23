@@ -1,6 +1,6 @@
 
 from datetime import datetime, timedelta
-
+from django_jalali.db import models as jmodels
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
@@ -53,6 +53,7 @@ class WorkingHours(models.Model):
 
 
 class Appointment(models.Model):
+    objects=jmodels.jManager()
     STATUS_CHOICES = [
         ("pending", "در انتظار"),
         ("confirmed", "تأیید شده"),
@@ -73,7 +74,7 @@ class Appointment(models.Model):
     )
     stylist = models.ForeignKey(Stylist, on_delete=models.PROTECT)
     service = models.ForeignKey(Service, on_delete=models.PROTECT)
-    date = models.DateField("تاریخ نوبت")
+    date = jmodels.jDateField("تاریخ]")
     start_time = models.TimeField("ساعت شروع")
     end_time = models.TimeField(
         "ساعت پایان",
@@ -93,8 +94,14 @@ class Appointment(models.Model):
         if not (self.date and self.start_time and self.service_id and self.stylist_id):
             return
 
+        gregorian_date=(
+            self.date.togregorian() 
+            if hasattr(self.date, "togregorian") 
+            else 
+            self.date
+        )
         if not self.end_time:
-            start = datetime.combine(self.date, self.start_time)
+            start = datetime.combine(gregorian_date, self.start_time)
             self.end_time = (
                 start + timedelta(minutes=self.service.duration_minutes)
             ).time()
@@ -104,6 +111,19 @@ class Appointment(models.Model):
 
         if self.status == "cancelled":
             return
+        day_hours = WorkingHours.objects.filter(
+            stylist=self.stylist,
+            weekday=gregorian_date.weekday(),
+        )
+        if not day_hours.exists():
+            raise ValidationError("این آرایشگر در این روز هفته کار نمی‌کند.")
+
+        within_shift = day_hours.filter(
+            start_time__lte=self.start_time,
+            end_time__gte=self.end_time,
+        ).exists()
+        if not within_shift:
+            raise ValidationError("این نوبت خارج از ساعت کاری آرایشگر است.")
 
         overlapping = (
             Appointment.objects.filter(
