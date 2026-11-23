@@ -18,8 +18,9 @@ class Service(models.Model):
         help_text="آرایشگر حداکثر چند نفر را هم‌زمان می‌تواند انجام دهد",
     )
     price = models.PositiveIntegerField("قیمت (تومان)")
+    deposit_amount=models.PositiveIntegerField("مبلغ بیعانه",default=400000)
 
-    def str(self):
+    def __str__ (self):
         return self.name
 
 
@@ -27,7 +28,7 @@ class Stylist(models.Model):
     name = models.CharField("نام آرایشگر", max_length=100)
     services = models.ManyToManyField(Service, related_name="stylists")
 
-    def str(self):
+    def __str__(self):
         return self.name
 
 
@@ -47,7 +48,7 @@ class WorkingHours(models.Model):
     start_time = models.TimeField("ساعت شروع")
     end_time = models.TimeField("ساعت پایان")
 
-    def str(self):
+    def __str__(self):
         return f"{self.stylist} - {self.get_weekday_display()} {self.start_time}-{self.end_time}"
 
 
@@ -85,7 +86,7 @@ class Appointment(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def str(self):
+    def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.stylist} - {self.date} {self.start_time}"
 
     def clean(self):
