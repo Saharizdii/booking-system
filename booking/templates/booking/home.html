@@ -1,0 +1,119 @@
+{% extends "booking/base.html" %}
+
+{% block content %}
+
+<!-- بخش اصلی -->
+<section class="hero text-center">
+  <div class="container">
+    <span class="hero-badge"><i class="bi bi-stars"></i> رزرو آنلاین، بدون انتظار</span>
+    <h1 class="display-5 mb-3">زیبایی تو، <span>هنر ماست</span></h1>
+    <p class="lead mb-4 mx-auto" style="max-width: 560px; color: #e6dbe4;">
+      از رنگ و مدل مو تا ناخن و میکاپ، با تیم متخصص ما. خدمت و آرایشگر دلخواهت رو انتخاب کن
+      و در چند دقیقه نوبتت رو رزرو کن.
+    </p>
+    <a href="#services" class="btn btn-rose btn-lg me-2">مشاهده‌ی خدمات</a>
+    <a href="#team" class="btn btn-ghost btn-lg">آشنایی با تیم</a>
+  </div>
+</section>
+
+<!-- خدمات -->
+<section id="services" class="container py-5">
+  <div class="section-title">
+    <small>SERVICES</small>
+    <h2>خدمات سالن</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="row g-4">
+    {% for service in services %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card service-card h-100">
+        <div class="card-body p-4">
+          <div class="icon-circle mb-3"><i class="bi {{ service.icon }}"></i></div>
+          <h5 class="fw-bold mb-3">{{ service.name }}</h5>
+          <p class="text-muted mb-1"><i class="bi bi-clock"></i> حدود {{ service.duration_minutes }} دقیقه</p>
+          <p class="price mb-3">{{ service.price|floatformat:"0g" }} تومان</p>
+          <a href="#" class="btn btn-rose w-100 disabled">رزرو نوبت (به‌زودی)</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">هنوز خدمتی ثبت نشده است. از پنل مدیریت اضافه کنید.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- چرا ما -->
+<section class="why py-5">
+  <div class="container">
+    <div class="section-title">
+      <small>WHY US</small>
+      <h2>چرا سالن نگین؟</h2>
+      <div class="line"></div>
+    </div>
+    <div class="row g-4 text-center">
+      <div class="col-md-4 why-item">
+        <div class="icon-circle"><i class="bi bi-calendar-check"></i></div>
+        <h5 class="fw-bold">رزرو آنلاین</h5>
+        <p class="text-muted">بدون تماس و انتظار، هر ساعت از شبانه‌روز نوبت بگیر.</p>
+      </div>
+      <div class="col-md-4 why-item">
+        <div class="icon-circle"><i class="bi bi-person-hearts"></i></div>
+        <h5 class="fw-bold">آرایشگران حرفه‌ای</h5>
+        <p class="text-muted">هر خدمت به متخصص همان حوزه سپرده می‌شود.</p>
+      </div>
+      <div class="col-md-4 why-item">
+        <div class="icon-circle"><i class="bi bi-shield-check"></i></div>
+        <h5 class="fw-bold">بهداشت و کیفیت</h5>
+        <p class="text-muted">رعایت کامل اصول بهداشتی و استفاده از مواد باکیفیت.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- تیم -->
+<section id="team" class="container py-5">
+  <div class="section-title">
+    <small>OUR TEAM</small>
+    <h2>تیم ما</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="row g-4 justify-content-center">
+    {% for stylist in stylists %}
+    <div class="col-6 col-md-4 col-lg-3">
+      <div class="stylist-card">
+        <div class="stylist-avatar"><i class="bi bi-person-heart"></i></div>
+        <h6 class="fw-bold mb-2">{{ stylist.name }}</h6>
+        {% for s in stylist.services.all %}
+          <span class="tag">{{ s.name }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">هنوز آرایشگری ثبت نشده است.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- تماس -->
+<section id="contact" class="container pb-4">
+  <div class="contact-box">
+    <div class="row g-4 align-items-center">
+      <div class="col-md-6">
+        <h3 class="fw-bold mb-3">تماس با ما</h3>
+        <p class="mb-2"><i class="bi bi-geo-alt"></i> آدرس: (آدرس سالن را اینجا بنویسید)</p>
+        <p class="mb-2"><i class="bi bi-telephone"></i> تلفن: ۰۹۱۲۰۰۰۰۰۰۰</p>
+        <p class="mb-2"><i class="bi bi-clock"></i> ساعت کاری: شنبه تا پنجشنبه، ۹ تا ۲۰</p>
+        <p class="mb-0"><i class="bi bi-instagram"></i> اینستاگرام: @negin_salon</p>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <h4 class="fw-bold">آماده‌ای برای یه تغییر؟</h4>
+        <p style="color:#e6dbe4;">همین الان نوبتت رو رزرو کن.</p>
+        <a href="#services" class="btn btn-rose btn-lg">انتخاب خدمت</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
